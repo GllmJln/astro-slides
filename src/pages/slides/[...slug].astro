@@ -1,0 +1,20 @@
+---
+    import { CollectionEntry, getCollection } from "astro:content";
+    import MDSlide from "../../layouts/MDSlide.astro";
+    import "../../styles/global.css"
+
+    export async function getStaticPaths() {
+        const slides = await getCollection("slides")
+        return slides.map(slide => ({
+            params: { slug: slide.slug }, props: { slide }
+        }))
+    }
+
+    const { slide } = Astro.props as { slide: CollectionEntry<"slides"> }
+    const { Content } = await slide.render()
+
+---
+
+<MDSlide {...slide.data }>
+    <Content />
+</MDSlide>

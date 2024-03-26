@@ -1,0 +1,106 @@
+---
+    import Page from "./Page.astro";
+    import Output from "./Output.astro";
+    interface Props {
+        title: string
+        backgroundColor?: string
+        align?: string | undefined
+        output?: string | undefined
+    }
+
+    const { title, backgroundColor, align, output } = Astro.props as Props
+
+    const alignment = align ?? "center"
+
+---
+
+<Page title={title} backgroundColor={backgroundColor}>
+    <div id="wrapper">
+        <slot />
+    </div>
+    {output && <div id="output">
+        <h2 class="sub">Output: </h2>
+        <Output layout={output} />
+    </div>}
+</Page>
+
+<script>
+    import { navigate } from "astro:transitions/client";
+
+    document.addEventListener("keydown", (event) => {
+        const current = window.location.href
+        const end = current.lastIndexOf("/")
+        if (event.key === "ArrowRight") {
+            const newRoute = +current.slice(end + 1) + 1
+            const newUrl = current.slice(0, end) + "/" + newRoute
+            navigate(newUrl)
+        }
+        else if (event.key === "ArrowLeft") {
+            const newRoute = +current.slice(end + 1) - 1
+            if (!newRoute) return
+            const newUrl = current.slice(0, end) + "/" + newRoute
+            navigate(newUrl)
+        }
+    });
+</script>
+
+
+<style is:global define:vars={{alignment}}>
+    #wrapper {
+        display: flex;
+        flex-direction: column;
+        flex-wrap: wrap;
+        gap: 2vw;
+        justify-content: var(--alignment);
+        align-items: var(--alignment);
+    }
+
+    #wrapper>.astro-code {
+        padding: 1em;
+        flex-grow: inherit;
+        font-size: larger;
+        border-radius: 15px;
+    }
+
+    #wrapper {
+        max-height: 80vh;
+        margin-bottom: 5vh;
+    }
+
+    #wrapper>* {
+        text-align: justify;
+        color: var(--white);
+        font-size: 3vh;
+    }
+
+    #wrapper>p>img {
+        max-width: 40vw;
+        height: auto;
+    }
+
+    #wrapper>p>code {
+        color: var(--light-yellow);
+        background-color: var(--lighter-grey);
+        border-radius: 8px;
+        padding: 5px;
+    }
+
+    #wrapper>ul>li {
+        padding: 15px;
+    }
+
+    img {
+        max-width: 100%;
+        max-height: 100%;
+    }
+
+    #output {
+        background-color: rgb(59, 58, 58);
+        padding: 10px 20px 10px 20px;
+        border-radius: 15px;
+    }
+
+    .sub {
+        color: var(--white);
+    }
+</style>

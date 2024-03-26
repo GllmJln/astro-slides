@@ -1,0 +1,11 @@
+body {
+  margin: 0 5vw 0 5vw;
+}
+
+:root {
+  --yellow: #e8e833;
+  --black: #282c34;
+  --white: #abb2bf;
+  --light-yellow: #b4b292;
+  --lighter-grey: #434547;
+}

@@ -1,0 +1,39 @@
+---
+    import { ViewTransitions } from "astro:transitions"
+    import Header from "../components/Header.astro"
+
+    interface Props {
+        title: string
+        backgroundColor: string | undefined
+    }
+
+    const { title, backgroundColor } = Astro.props as Props
+
+    const bodyColor = backgroundColor ?? "#FFFF00"
+---
+
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+    <ViewTransitions />
+</head>
+
+<body>
+    <div transition:animate="slide">
+        <Header title={title} />
+        <slot />
+    </div>
+</body>
+
+</html>
+
+<style define:vars={{bodyColor}}>
+    body {
+        background-color: var(--bodyColor);
+    }
+</style>

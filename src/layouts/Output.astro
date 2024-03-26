@@ -1,0 +1,12 @@
+---
+    import HelloWorld from "../components/HelloWorld.astro";
+
+    interface Props {
+        layout?: string | undefined
+    }
+
+    const { layout } = Astro.props as Props
+---
+
+{layout === "component-3" &&
+<HelloWorld />}
