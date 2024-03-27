@@ -28,19 +28,18 @@
     import { navigate } from "astro:transitions/client";
 
     document.addEventListener("keydown", (event) => {
+        if (event.key != "ArrowRight" && event.key != "ArrowLeft") {
+            return
+        }
         const current = window.location.href
-        const end = current.lastIndexOf("/")
-        if (event.key === "ArrowRight") {
-            const newRoute = +current.slice(end + 1) + 1
-            const newUrl = current.slice(0, end) + "/" + newRoute
-            navigate(newUrl)
-        }
-        else if (event.key === "ArrowLeft") {
-            const newRoute = +current.slice(end + 1) - 1
-            if (!newRoute) return
-            const newUrl = current.slice(0, end) + "/" + newRoute
-            navigate(newUrl)
-        }
+        const end = current.lastIndexOf("/") + 1
+        const currentSlideNumber = parseInt(current.slice(end))
+        const newSlideNumber = (event.key === "ArrowRight" ? currentSlideNumber + 1 : currentSlideNumber - 1)
+        if (!newSlideNumber) return
+        const prefix = "0"
+        const targetLength = 2
+        const newUrl = current.slice(0, end) + prefix.repeat(targetLength - newSlideNumber.toString().length) + newSlideNumber
+        navigate(newUrl)
     });
 </script>
 
