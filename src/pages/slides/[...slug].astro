@@ -12,9 +12,9 @@
 
     const { slide } = Astro.props as { slide: CollectionEntry<"slides"> }
     const { Content } = await slide.render()
-
+    const slidesLength = (await getCollection("slides")).length
 ---
 
-<MDSlide {...slide.data }>
+<MDSlide {...slide.data } slidesLength={slidesLength}>
     <Content />
 </MDSlide>

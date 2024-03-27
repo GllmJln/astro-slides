@@ -6,15 +6,16 @@
         backgroundColor?: string
         align?: string | undefined
         output?: string | undefined
+        slidesLength: number
     }
 
-    const { title, backgroundColor, align, output } = Astro.props as Props
+    const { title, backgroundColor, align, output, slidesLength } = Astro.props as Props
 
     const alignment = align ?? "center"
-
 ---
 
 <Page title={title} backgroundColor={backgroundColor}>
+    <div id="max-length" data-max={slidesLength}></div>
     <div id="wrapper">
         <slot />
     </div>
@@ -28,18 +29,24 @@
     import { navigate } from "astro:transitions/client";
 
     document.addEventListener("keydown", (event) => {
-        if (event.key != "ArrowRight" && event.key != "ArrowLeft") {
-            return
-        }
-        const current = window.location.href
-        const end = current.lastIndexOf("/") + 1
-        const currentSlideNumber = parseInt(current.slice(end))
-        const newSlideNumber = (event.key === "ArrowRight" ? currentSlideNumber + 1 : currentSlideNumber - 1)
-        if (!newSlideNumber) return
-        const prefix = "0"
-        const targetLength = 2
-        const newUrl = current.slice(0, end) + prefix.repeat(targetLength - newSlideNumber.toString().length) + newSlideNumber
-        navigate(newUrl)
+        try {
+
+            if (event.key != "ArrowRight" && event.key != "ArrowLeft") {
+                return
+            }
+            const current = window.location.href
+            const end = current.lastIndexOf("/") + 1
+            const currentSlideNumber = parseInt(current.slice(end))
+            const op = event.key === "ArrowRight" ? 1 : -1
+            const newSlideNumber = currentSlideNumber + op
+            const maxSlideNumber = document.getElementById("max-length")?.dataset.max
+            if (!newSlideNumber || maxSlideNumber && +maxSlideNumber < newSlideNumber) return
+            const prefix = "0"
+            const targetLength = 2
+            const newUrl = current.slice(0, end) + prefix.repeat(targetLength - newSlideNumber.toString().length) + newSlideNumber
+            navigate(newUrl).catch()
+            op < 0 && history.back()
+        } catch (e) { }
     });
 </script>
 
