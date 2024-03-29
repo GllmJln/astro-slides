@@ -15,22 +15,25 @@
 ---
 
 <Page title={title} backgroundColor={backgroundColor}>
-    <div id="max-length" data-max={slidesLength}></div>
-    <div id="wrapper">
-        <slot />
+    <div transition:animate="slide">
+        <div id="max-length" data-max={slidesLength}></div>
+        <div id="slide">
+            <div id="wrapper">
+                <slot />
+            </div>
+            {output && <div id="output">
+                <h2 class="sub">Output: </h2>
+                <Output layout={output} />
+            </div>}
+        </div>
     </div>
-    {output && <div id="output">
-        <h2 class="sub">Output: </h2>
-        <Output layout={output} />
-    </div>}
 </Page>
 
 <script>
     import { navigate } from "astro:transitions/client";
 
-    document.addEventListener("keydown", (event) => {
-        try {
-
+    document.addEventListener("astro:page-load", () => {
+        document.addEventListener("keydown", (event) => {
             if (event.key != "ArrowRight" && event.key != "ArrowLeft") {
                 return
             }
@@ -44,11 +47,17 @@
             const prefix = "0"
             const targetLength = 2
             const newUrl = current.slice(0, end) + prefix.repeat(targetLength - newSlideNumber.toString().length) + newSlideNumber
-            navigate(newUrl).catch()
+            navigate(newUrl)
             op < 0 && history.back()
-        } catch (e) { }
-    });
+        });
+
+
+
+    }, { once: true })
+
+
 </script>
+
 
 
 <style is:global define:vars={{alignment}}>
@@ -56,20 +65,26 @@
         display: flex;
         flex-direction: column;
         flex-wrap: wrap;
-        gap: 2vw;
-        justify-content: var(--alignment);
+        justify-content: center;
         align-items: var(--alignment);
+        flex-grow: 1;
+    }
+
+    #slide {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        min-height: 70vh;
     }
 
     #wrapper>.astro-code {
         padding: 1em;
-        flex-grow: inherit;
         font-size: larger;
         border-radius: 15px;
     }
 
     #wrapper {
-        max-height: 80vh;
+        max-height: 90vh;
         margin-bottom: 5vh;
     }
 
@@ -77,6 +92,7 @@
         text-align: justify;
         color: var(--white);
         font-size: 3vh;
+        margin: 1vw 0;
     }
 
     #wrapper>p>img {
@@ -98,6 +114,14 @@
         padding: 5px;
     }
 
+
+    #wrapper>ul>li>*>code {
+        color: var(--light-yellow);
+        background-color: var(--lighter-grey);
+        border-radius: 8px;
+        padding: 5px;
+    }
+
     #wrapper>ul>li {
         padding: 15px;
     }
@@ -111,6 +135,18 @@
         background-color: rgb(59, 58, 58);
         padding: 10px 20px 10px 20px;
         border-radius: 15px;
+        min-width: 35vw;
+        align-self: center;
+    }
+
+    #wrapper>blockquote>p {
+        font-style: italic;
+        background-color: #1b1e24;
+        font-size: large;
+        border-top: 5px solid #a17740;
+        padding: 20px;
+        color: var(--off-white);
+        border-radius: 10px;
     }
 
     .sub {

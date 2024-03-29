@@ -19,12 +19,12 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width" />
     <meta name="generator" content={Astro.generator} />
-    <title>{title}</title>
+    <title>Astro slides - {title}</title>
     <ViewTransitions />
 </head>
 
 <body>
-    <div transition:animate="slide">
+    <div>
         <Header title={title} />
         <slot />
     </div>
@@ -37,3 +37,29 @@
         background-color: var(--bodyColor);
     }
 </style>
+
+<script>
+    let idleTimer
+
+    function handleTimeout() {
+        document.body.addEventListener("mousemove", () => {
+            document.body.style.cursor = "auto"
+
+            clearTimeout(idleTimer)
+
+            idleTimer = setTimeout(() => {
+                document.body.style.cursor = "none"
+            }, 3000)
+        })
+
+        document.addEventListener("astro:before-swap", () => {
+            document.removeEventListener("mousemove", document.body)
+            clearTimeout(idleTimer)
+        }, { once: true })
+    }
+
+    handleTimeout()
+
+
+    document.addEventListener("astro:after-swap", handleTimeout)
+</script>

@@ -1,5 +1,6 @@
 ---
     import HelloWorld from "../components/HelloWorld.astro";
+    import Syntax from "../components/Syntax.astro";
 
     interface Props {
         layout?: string | undefined
@@ -8,5 +9,8 @@
     const { layout } = Astro.props as Props
 ---
 
-{layout === "component-3" &&
+{layout === "hello-world-component" &&
 <HelloWorld />}
+
+{layout === "syntax-component" &&
+<Syntax />}
