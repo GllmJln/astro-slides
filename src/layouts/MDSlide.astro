@@ -38,13 +38,13 @@
 
         let called = false
         function handleEvent(event: KeyboardEvent) {
-            console.log("ping")
             if (called) return
             if (event.key != "ArrowRight" && event.key != "ArrowLeft") {
                 return;
             };
             called = true
-            const current = window.location.href;
+            const rawCurrent = window.location.href
+            const current = rawCurrent.charAt(rawCurrent.length - 1) === "/" ? rawCurrent.slice(0, rawCurrent.length - 1) : rawCurrent
             const end = current.lastIndexOf("/") + 1;
             const currentSlideNumber = parseInt(current.slice(end));
             const op = event.key === "ArrowRight" ? 1 : -1;
@@ -56,7 +56,7 @@
             };
             const prefix = "0";
             const targetLength = 2;
-            const newUrl = current.slice(0, end) + prefix.repeat(targetLength - newSlideNumber.toString().length) + newSlideNumber;
+            const newUrl = current.slice(0, end) + prefix.repeat(targetLength - newSlideNumber.toString().length) + newSlideNumber + "/";
             navigate(newUrl);
             op < 0 && history.back();
         }
