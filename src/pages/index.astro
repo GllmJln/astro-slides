@@ -6,14 +6,36 @@
 
 <head>
 	<meta charset="utf-8" />
-	<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+	<link rel="icon" type="image/svg+xml" href={(import.meta.env as any).BASE_URL + "/favicon.svg" } />
 	<meta name="viewport" content="width=device-width" />
 	<meta name="generator" content={Astro.generator} />
 	<title>Astro</title>
 </head>
 
 <body>
-	<a href="astro-slides/slides/01">Start the slides...</a>
+	<div>
+		<a href={(import.meta.env as any).BASE_URL+"/slides/01"}>Go to the slides!</a>
+	</div>
+	<style>
+		body {
+			background-color: var(--background);
+		}
+
+		a {
+			font-size: x-large;
+			color: var(--orange);
+		}
+
+		div {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+
+			height: 100vh;
+
+		}
+	</style>
 </body>
+
 
 </html>

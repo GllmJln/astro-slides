@@ -34,6 +34,7 @@
 <style define:vars={{backgroundColor}}>
     body {
         background-color: var(--backgroundColor);
+        curser: none;
     }
 </style>
 
@@ -41,6 +42,8 @@
     let idleTimer: number | undefined
 
     function handleTimeout() {
+
+        document.body.style.cursor = "none"
 
         function handleEvent() {
             document.body.style.cursor = "auto"
