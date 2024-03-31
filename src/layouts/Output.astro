@@ -1,6 +1,8 @@
 ---
     import HelloWorld from "../components/HelloWorld.astro";
     import Syntax from "../components/Syntax.astro";
+    import SvelteDemo from "../components/SvelteDemo.svelte"
+    import UseSvelte from "../components/UseSvelte.astro";
 
     interface Props {
         layout?: string | undefined
@@ -14,3 +16,9 @@
 
 {layout === "syntax-component" &&
 <Syntax />}
+
+{layout === "svelte-demo" &&
+<SvelteDemo client:load />}
+
+{layout === "svelte-using" &&
+<UseSvelte />}

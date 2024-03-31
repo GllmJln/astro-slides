@@ -4,12 +4,11 @@
 
     interface Props {
         title: string
-        backgroundColor: string | undefined
+        backgroundColor: string
     }
 
     const { title, backgroundColor } = Astro.props as Props
 
-    const bodyColor = backgroundColor ?? "#FFFF00"
 ---
 
 <html lang="en">
@@ -32,9 +31,9 @@
 
 </html>
 
-<style define:vars={{bodyColor}}>
+<style define:vars={{backgroundColor}}>
     body {
-        background-color: var(--bodyColor);
+        background-color: var(--backgroundColor);
     }
 </style>
 

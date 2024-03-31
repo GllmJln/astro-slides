@@ -1,0 +1,35 @@
+<script lang="ts">
+  // export makes it a prop
+  export let items: string[] = [];
+</script>
+
+<!-- Gotcha of svelte, reactivity is triggered by assignment -->
+<button on:click={() => (items = [...items, (items.length + 1).toString()])}>
+  Add an item
+</button>
+
+<ol>
+  {#each items as item}
+    <li>Element {item}</li>
+  {/each}
+</ol>
+
+<slot />
+
+<style>
+  li {
+    color: beige;
+  }
+
+  button {
+    background-color: gray;
+    border: 5px solid black;
+    border-radius: 5px;
+    font-size: x-large;
+    padding: 5px;
+  }
+
+  button:active {
+    transform: translateY(4px);
+  }
+</style>

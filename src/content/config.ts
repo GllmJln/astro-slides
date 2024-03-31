@@ -5,7 +5,7 @@ const slideCollection = defineCollection({
   type: "content",
   schema: z.object({
     title: z.string(),
-    backgroundColor: z.string(),
+    backgroundColor: z.string().optional(),
     align: z.string().optional(),
     output: z.string().optional(),
   }),

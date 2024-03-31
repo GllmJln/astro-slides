@@ -3,7 +3,7 @@
     import Output from "./Output.astro";
     interface Props {
         title: string
-        backgroundColor?: string
+        backgroundColor?: string | undefined
         align?: string | undefined
         output?: string | undefined
         slidesLength: number
@@ -12,9 +12,11 @@
     const { title, backgroundColor, align, output, slidesLength } = Astro.props as Props
 
     const alignment = align ?? "center"
+
+    const bodyColor = backgroundColor ?? "#282c34"
 ---
 
-<Page title={title} backgroundColor={backgroundColor}>
+<Page title={title} backgroundColor={bodyColor}>
     <div transition:animate="slide">
         <div id="max-length" data-max={slidesLength}></div>
         <div id="slide">
@@ -32,29 +34,43 @@
 <script>
     import { navigate } from "astro:transitions/client";
 
-    document.addEventListener("astro:page-load", () => {
-        document.addEventListener("keydown", (event) => {
+    function addListener() {
+
+        let called = false
+        function handleEvent(event) {
+            console.log("ping")
+            if (called) return
             if (event.key != "ArrowRight" && event.key != "ArrowLeft") {
+                return;
+            };
+            called = true
+            const current = window.location.href;
+            const end = current.lastIndexOf("/") + 1;
+            const currentSlideNumber = parseInt(current.slice(end));
+            const op = event.key === "ArrowRight" ? 1 : -1;
+            const newSlideNumber = currentSlideNumber + op;
+            const maxSlideNumber = document.getElementById("max-length")?.dataset.max;
+            if (!newSlideNumber || maxSlideNumber && +maxSlideNumber < newSlideNumber) {
+                called = false
                 return
-            }
-            const current = window.location.href
-            const end = current.lastIndexOf("/") + 1
-            const currentSlideNumber = parseInt(current.slice(end))
-            const op = event.key === "ArrowRight" ? 1 : -1
-            const newSlideNumber = currentSlideNumber + op
-            const maxSlideNumber = document.getElementById("max-length")?.dataset.max
-            if (!newSlideNumber || maxSlideNumber && +maxSlideNumber < newSlideNumber) return
-            const prefix = "0"
-            const targetLength = 2
-            const newUrl = current.slice(0, end) + prefix.repeat(targetLength - newSlideNumber.toString().length) + newSlideNumber
-            navigate(newUrl)
-            op < 0 && history.back()
-        });
+            };
+            const prefix = "0";
+            const targetLength = 2;
+            const newUrl = current.slice(0, end) + prefix.repeat(targetLength - newSlideNumber.toString().length) + newSlideNumber;
+            navigate(newUrl);
+            op < 0 && history.back();
+        }
 
+        document.addEventListener("keydown", handleEvent);
 
+        document.addEventListener("astro:before-swap", () => {
+            document.removeEventListener("keydown", handleEvent)
+        }, { once: true })
+    }
 
-    }, { once: true })
+    addListener()
 
+    document.addEventListener("astro:after-swap", addListener)
 
 </script>
 
@@ -151,5 +167,22 @@
 
     .sub {
         color: var(--white);
+    }
+
+    #link-div {
+        margin-top: 15vh;
+    }
+
+    #wrapper>#link-div>* {
+        margin: 5px;
+        font-size: large;
+    }
+
+    #links * {
+        font-size: medium;
+    }
+
+    .link {
+        color: var(--orange)
     }
 </style>

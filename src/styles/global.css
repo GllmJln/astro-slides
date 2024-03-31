@@ -5,9 +5,10 @@ body {
 
 :root {
   --yellow: #e8e833;
-  --black: #282c34;
   --white: #abb2bf;
   --off-white: #949494;
   --light-yellow: #b4b292;
   --lighter-grey: #434547;
+  --orange: #d19a66;
+  --background: #282c34;
 }
