@@ -38,10 +38,11 @@
 </style>
 
 <script>
-    let idleTimer
+    let idleTimer: number | undefined
 
     function handleTimeout() {
-        document.body.addEventListener("mousemove", () => {
+
+        function handleEvent() {
             document.body.style.cursor = "auto"
 
             clearTimeout(idleTimer)
@@ -49,10 +50,11 @@
             idleTimer = setTimeout(() => {
                 document.body.style.cursor = "none"
             }, 3000)
-        })
+        }
+        document.body.addEventListener("mousemove", handleEvent)
 
         document.addEventListener("astro:before-swap", () => {
-            document.removeEventListener("mousemove", document.body)
+            document.removeEventListener("mousemove", handleEvent)
             clearTimeout(idleTimer)
         }, { once: true })
     }

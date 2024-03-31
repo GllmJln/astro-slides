@@ -37,7 +37,7 @@
     function addListener() {
 
         let called = false
-        function handleEvent(event) {
+        function handleEvent(event: KeyboardEvent) {
             console.log("ping")
             if (called) return
             if (event.key != "ArrowRight" && event.key != "ArrowLeft") {
