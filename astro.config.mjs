@@ -10,6 +10,7 @@ export default defineConfig({
       theme: "one-dark-pro",
     },
   },
+  prefetch: true,
 
   site: "https://gllmjln.github.io",
   base: "astro-slides",

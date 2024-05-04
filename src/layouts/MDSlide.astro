@@ -32,9 +32,38 @@
 </Page>
 
 <script>
+    import { prefetch } from "astro:prefetch";
     import { navigate } from "astro:transitions/client";
 
-    function addListener() {
+    interface routes {
+        previous?: string
+        next?: string
+    }
+    
+    function getRoutes():routes {
+            const rawCurrent = window.location.href
+            const current = rawCurrent.charAt(rawCurrent.length - 1) === "/" ? rawCurrent.slice(0, rawCurrent.length - 1) : rawCurrent
+            const end = current.lastIndexOf("/") + 1;
+            const currentSlideNumber = parseInt(current.slice(end));
+            const possibleNewSlides = [currentSlideNumber + 1, currentSlideNumber -1];
+            const maxSlideNumber = document.getElementById("max-length")?.dataset.max;
+
+            const routes: routes = {}
+            possibleNewSlides.forEach((route, i) => {
+                if (!route || maxSlideNumber && +maxSlideNumber < route) {
+                    return
+                }
+                const key = !i ? "next" : "previous"
+                const prefix = "0";
+                const targetLength = 2;
+                const url = current.slice(0, end) + prefix.repeat(targetLength - route.toString().length) + route + "/";
+                routes[key] = url
+            })
+
+            return routes
+    }
+
+    function listenMovementKeys() {
 
         let called = false
         function handleEvent(event: KeyboardEvent) {
@@ -43,22 +72,15 @@
                 return;
             };
             called = true
-            const rawCurrent = window.location.href
-            const current = rawCurrent.charAt(rawCurrent.length - 1) === "/" ? rawCurrent.slice(0, rawCurrent.length - 1) : rawCurrent
-            const end = current.lastIndexOf("/") + 1;
-            const currentSlideNumber = parseInt(current.slice(end));
-            const op = event.key === "ArrowRight" ? 1 : -1;
-            const newSlideNumber = currentSlideNumber + op;
-            const maxSlideNumber = document.getElementById("max-length")?.dataset.max;
-            if (!newSlideNumber || maxSlideNumber && +maxSlideNumber < newSlideNumber) {
+
+            const route = event.key === "ArrowRight" ? "next" : "previous";
+
+            const nextRoute = getRoutes()[route] 
+            if (!nextRoute) {
                 called = false
                 return
-            };
-            const prefix = "0";
-            const targetLength = 2;
-            const newUrl = current.slice(0, end) + prefix.repeat(targetLength - newSlideNumber.toString().length) + newSlideNumber + "/";
-            navigate(newUrl);
-            op < 0 && history.back();
+            }
+            navigate(nextRoute);
         }
 
         document.addEventListener("keydown", handleEvent);
@@ -66,11 +88,23 @@
         document.addEventListener("astro:before-swap", () => {
             document.removeEventListener("keydown", handleEvent)
         }, { once: true })
+
     }
 
-    addListener()
+    function prefetchRoutes() {
+        Object.values(getRoutes()).forEach(route => {
+            prefetch(route)
+        })
+    }
 
-    document.addEventListener("astro:after-swap", addListener)
+
+    
+    listenMovementKeys()
+    prefetchRoutes()
+    
+    document.addEventListener("astro:after-swap", listenMovementKeys)
+
+    document.addEventListener("astro:after-swap", prefetchRoutes)
 
 </script>
 
